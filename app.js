@@ -3,9 +3,14 @@ var path = require('path');
 var app = express().http().io();
 var mongoose = require('mongoose');
 
+// var uristring = process.env.MONGOLAB_URI || 
+//     process.env.MONGOHQ_URL || 
+//     'mongodb://localhost';
+
 var uristring = process.env.MONGOLAB_URI || 
     process.env.MONGOHQ_URL || 
-    'mongodb://localhost';
+    'mongodb://heroku_app25018002:plqiscah8os7mmtufthjpd6mo4@ds043037.m
+ongolab.com:43037/heroku_app25018002';
 
 mongoose.connect(uristring, function(err, res){
     console.log('asdf');
