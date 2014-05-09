@@ -1,0 +1,33 @@
+{
+  "name": "questions",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "start": "node ./bin/www"
+  },
+  "dependencies": {
+    "express": "~3.4.8",
+    "static-favicon": "~1.0.0",
+    "morgan": "~1.0.0",
+    "cookie-parser": "~1.0.1",
+    "body-parser": "~1.0.0",
+    "debug": "~0.7.4",
+    "ejs": "~0.8.5"
+  },
+  "description": "question game",
+  "main": "app.js",
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/kevinylee1991/questions_game.git"
+  },
+  "keywords": [
+    "game"
+  ],
+  "author": "Kevin Lee",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/kevinylee1991/questions_game/issues"
+  },
+  "homepage": "https://github.com/kevinylee1991/questions_game"
+}

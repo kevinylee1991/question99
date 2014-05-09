@@ -1,0 +1,190 @@
+doctype
+html
+  head
+    script(src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js")
+    link(href="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css", rel="stylesheet")
+    script(src="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js")  
+    script(src="/socket.io/socket.io.js")
+    link(href='http://fonts.googleapis.com/css?family=Architects+Daughter' rel='stylesheet' type='text/css')
+    link(href='http://fonts.googleapis.com/css?family=Vidaloka' rel='stylesheet' type='text/css')
+    link(href='http://fonts.googleapis.com/css?family=PT+Sans' rel='stylesheet' type='text/css')
+    link(href='http://fonts.googleapis.com/css?family=Maiden+Orange' rel='stylesheet' type='text/css')
+    link(href='http://fonts.googleapis.com/css?family=Signika:600' rel='stylesheet' type='text/css')
+    link(href='http://fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet' type='text/css')
+    link(rel='stylesheet' href='/stylesheets/style.css')
+    title Game
+    script.
+      io = io.connect();
+      $(document).ready(function(){
+        var timer;
+        var interval;
+
+        io.emit('join_room', {});
+
+        io.on('get_stats', function(data){
+          $('#username').html("Logged in as: <span>"+data.stats.username+"</span>");
+          $('#record').html('Wins: '+data.stats.record.wins+' &nbsp;&nbsp;Losses: '+data.stats.record.losses);
+          $('#draws').text('Ties: '+data.stats.record.ties);
+        });
+
+        io.on('first_player', function(data){
+          $('#players').html('<p>Round will start when there are 3 players...</p><p>Players in room:</p>');
+          $('#players').append('<p>'+data.username+'</p>');
+        });
+
+        io.on('players', function(data){
+          num_players = data.players.length;
+          $('#players').html('');
+          $('#players').append('<p>Round will start when there are 3 players...</p><p>Players in room:</p>')
+          for (var i = 0; i < num_players; i++)
+          {
+            $('#players').append('<p>'+data.players[i]+'</p>');
+          }
+        });
+
+        io.on('game_start', function(data){
+          $('#players').html('');
+          $('#judge').html("<img src='images/crown-sm.png'><div class='judge'><h4>Judge</h4><h2>"+data.roles.judge+"</h2></div>");
+          $('#person1').html("<div class='player'><h4>Player 1</h4><h2>"+data.roles.players[0]+"</h2></div>");
+          $('#person2').html("<div class='player'><h4>Player 2</h4><h2>"+data.roles.players[1]+"</h2></div>");
+          $('#question').html('<p><b>Question:</b> '+data.question+'</p>');
+          timer = 15;
+          $('#timer').html('<h2>'+timer+'</h2>');
+          io.emit('request_roles', {room_number: data.current_room});
+          start_timer();
+        });
+
+        io.on('judge', function(data){
+          $('#role').html("<h2 style='background-color: red'>Judge</h2>");
+        });
+
+        io.on('player', function(data){
+          $('#role').html("<h2 style='background-color: lime'>Player</h2>");
+          $('#player_form').html("<input id='answer' class='form-control' type='text'>");
+        });
+
+        io.on('player1_answer', function(data){
+          $('#person1').append('<p>'+data.answer+'</p>');
+        });
+
+        io.on('player2_answer', function(data){
+          $('#person2').append('<p>'+data.answer+'</p>');
+        });
+
+        io.on('judge_form', function(data){
+          $('#button1_div').html("<p><button id='button1' type='button' class='btn btn-primary btn-lg'>Player 1</button></p>");
+          $('#button2_div').html("<p><button id='button2' type='button' class='btn btn-primary btn-lg'>Player 2</button></p>");
+          $('#tie_button_div').html("<p><button id='tie_button' type='button' class='btn btn-danger btn-lg'>Tie</button></p>");
+          $('#reason_div').html("<h4>Choose a winner</h4><p>Give a reason before choosing (optional):</p><input id='reason' class='form-control' type='text'>");
+        });
+
+        io.on('winner', function(data){
+          clearInterval(interval);
+          $('#reason_div').html("<h3>"+data.message+"</h3><p>Reason: "+data.reason+"</p>")
+          $('#button1_div').html("");
+          $('#button2_div').html("");
+          $('#tie_button_div').html("<button id='next' type='button' class='btn btn-success btn-lg'>Next</button>");
+        });
+
+        $(document).on('click', '#button1', function(){
+          var reason = $('#reason').val();
+          io.emit('player1_wins', {reason: reason});
+        });
+
+        $(document).on('click', '#button2', function(){
+          var reason = $('#reason').val();
+          io.emit('player2_wins', {reason: reason});
+        });
+
+        $(document).on('click', '#tie_button', function(){
+          var reason = $('#reason').val();
+          io.emit('tie_game', {reason: reason});
+        });
+
+        $(document).on('click', '#next', function(){
+          $('#role').html('');
+          $('#judge').html('');
+          $('#person1').html('');
+          $('#person2').html('');
+          $('#reason_div').html('');
+          $('#question').html('');
+          $('#player_form').html('');
+          $('#timer').html('');
+          $('#tie_button_div').html('');
+          io.emit('leave_room', {});
+          io.emit('join_room', {});
+        });
+
+        $('#player_form').submit(function(){
+          return false;
+        });
+
+        function judge_timer(){ //set countdown for judging time, set countdown at 10 seconds
+          timer = 20;
+          $('#timer').html('<h2>'+timer+'</h2>');
+          interval = setInterval(function(){
+            timer -= 1;
+            $('#timer').html('<h2>'+timer+'</h2>');
+            if (timer == 0)
+            {
+              clearInterval(interval);
+              io.emit('tie_game', {reason: 'Judge was too slow'});
+            }
+          }, 1000);
+        }
+
+        function start_timer(){
+          interval = setInterval(function(){
+            timer -= 1;
+            $('#timer').html('<h2>'+timer+'</h2>');
+            if (timer == 0)
+            {
+              clearInterval(interval);
+              submit_answers();
+            }
+          }, 1000);
+        };
+
+        function submit_answers(){
+          var answer = $('#answer').val();
+          io.emit('submit_answer', {answer: answer});
+          $('#player_form').html('');
+          judge_timer(); //set timer for judge
+        };
+      });
+  body
+    div.container
+      div#header.row
+        div#info.col-md-3
+          p#username Username
+          p#record
+          p#draws
+        div.col-md-9 
+          h1 99 Questions
+          div#links
+            a(href='/logout') Log out <br>
+            a(href='http://www.google.com') Suggest a question (not ready)
+      div#players
+      div#game.row
+        div.row
+          div.col-md-4#role
+          div#judge.col-md-4.centerblock
+            div.judge
+        div.row
+          div.col-md-1
+          div#person1.col-md-4.centerblock
+          div.col-md-2#timer
+          div#person2.col-md-4.centerblock
+        div.row
+          div.col-md-1
+          div#button1_div.col-md-4.buttons
+          div#tie_button_div.col-md-2.buttons
+          div#button2_div.col-md-4.buttons
+        div.row
+          div.col-md-3
+          div.col-md-6#reason_div
+        div.row
+          div.col-md-4
+          div.col-md-4.center
+            p#question
+            form#player_form
