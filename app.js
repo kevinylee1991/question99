@@ -7,9 +7,7 @@ var mongoose = require('mongoose');
 //     process.env.MONGOHQ_URL || 
 //     'mongodb://localhost';
 
-var uristring = process.env.MONGOLAB_URI || 
-    process.env.MONGOHQ_URL || 
-    'mongodb://heroku_app25018002:plqiscah8os7mmtufthjpd6mo4@ds043037.m
+var uristring = 'mongodb://heroku_app25018002:plqiscah8os7mmtufthjpd6mo4@ds043037.m
 ongolab.com:43037/heroku_app25018002';
 
 mongoose.connect(uristring, function(err, res){

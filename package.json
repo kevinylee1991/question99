@@ -1,6 +1,9 @@
 {
   "name": "questions",
   "version": "0.0.1",
+  "engines": {
+    "node": "0.10.26"
+  },
   "private": true,
   "scripts": {
     "start": "node ./bin/www"
