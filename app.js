@@ -2,7 +2,14 @@ var express = require('express.io');
 var path = require('path');
 var app = express().http().io();
 var mongoose = require('mongoose');
-mongoose.connect('mongodb://localhost');
+
+var uristring = process.env.MONGOLAB_URI || 
+    process.env.MONGOHQ_URL || 
+    'mongodb://localhost';
+
+mongoose.connect(uristring, function(err, res){
+    console.log('asdf');
+}
 // configuring our environments
 app.configure(function(){
   app.use(express.cookieParser());  
