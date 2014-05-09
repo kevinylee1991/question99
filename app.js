@@ -7,12 +7,14 @@ var mongoose = require('mongoose');
 //     process.env.MONGOHQ_URL || 
 //     'mongodb://localhost';
 
-var uristring = 'mongodb://heroku_app25018002:plqiscah8os7mmtufthjpd6mo4@ds043037.m
-ongolab.com:43037/heroku_app25018002';
+// var uristring = 'mongodb://heroku_app25018002:plqiscah8os7mmtufthjpd6mo4@ds043037.m
+// ongolab.com:43037/heroku_app25018002';
 
-mongoose.connect(uristring, function(err, res){
-    console.log('asdf');
-}
+mongoose.connect('mongodb://heroku_app25018002:plqiscah8os7mmtufthjpd6mo4@ds043037.m
+ongolab.com:43037/heroku_app25018002');
+
+// mongoose.connect('mongodb://localhost');
+
 // configuring our environments
 app.configure(function(){
   app.use(express.cookieParser());  
