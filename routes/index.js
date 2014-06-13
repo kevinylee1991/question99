@@ -8,7 +8,7 @@ rooms = {};
 rooms_temp = {}; //created to be able to access db if person leaves prematurely
 
 //To do:
-//Delete room data after games are done
+//Remove room from req after joining a new room
 
 module.exports = function Route(app){
 
@@ -101,7 +101,7 @@ module.exports = function Route(app){
 			rooms[room_id] = [];
 			req.io.join(room_id);
 			req.session.current_room = room_id;
-			rooms[room_id].push(req.session.username);
+			rooms[room_id].push(req.session.username.toLowerCase());
 			req.session.save(function(){
 				app.io.room(room_id).broadcast('first_player', {username: req.session.username});	
 			});
@@ -109,7 +109,7 @@ module.exports = function Route(app){
 		else //if room isn't at 3 people yet
 		{
 			req.io.join(room_id);
-			rooms[room_id].push(req.session.username);
+			rooms[room_id].push(req.session.username.toLowerCase());
 			app.io.room(room_id).broadcast('players', {players: rooms[room_id]});
 			req.session.current_room = room_id;
 			req.session.save(function(){
@@ -135,7 +135,7 @@ module.exports = function Route(app){
 			if (err) console.log(err);
 			else
 			{
-				req.io.emit('get_stats', {stats: users[0]});
+				req.io.emit('get_stats', {stats: users[0], username: req.session.username});
 			}
 		});
 	});

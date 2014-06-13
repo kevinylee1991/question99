@@ -10,10 +10,10 @@ var mongoose = require('mongoose');
 // var uristring = 'mongodb://heroku_app25018002:plqiscah8os7mmtufthjpd6mo4@ds043037.m
 // ongolab.com:43037/heroku_app25018002';
 
-mongoose.connect('mongodb://heroku_app25018002:plqiscah8os7mmtufthjpd6mo4@ds043037.m
-ongolab.com:43037/heroku_app25018002');
+// mongoose.connect('mongodb://heroku_app25018002:plqiscah8os7mmtufthjpd6mo4@ds043037.m
+// ongolab.com:43037/heroku_app25018002');
 
-// mongoose.connect('mongodb://localhost');
+mongoose.connect('mongodb://localhost');
 
 // configuring our environments
 app.configure(function(){
@@ -25,4 +25,4 @@ app.configure(function(){
 });
 //we're going to have /routes/index.js handle all of our routing
 var route = require('./routes/index.js')(app);
-app.listen(process.env.PORT || 2343);
+app.listen(2343);

@@ -22,7 +22,7 @@ html
         io.emit('join_room', {});
 
         io.on('get_stats', function(data){
-          $('#username').html("Logged in as: <span>"+data.stats.username+"</span>");
+          $('#username').html("Logged in as: <span>"+data.username+"</span>");
           $('#record').html('Wins: '+data.stats.record.wins+' &nbsp;&nbsp;Losses: '+data.stats.record.losses);
           $('#draws').text('Ties: '+data.stats.record.ties);
         });
@@ -155,11 +155,11 @@ html
   body
     div.container
       div#header.row
-        div#info.col-md-3
+        div#info.col-md-3.col-sm-3.col-xs-3
           p#username Username
           p#record
           p#draws
-        div.col-md-9 
+        div.col-md-9.col-sm-9.col-xs-9
           h1 99 Questions
           div#links
             a(href='/logout') Log out <br>
@@ -167,24 +167,24 @@ html
       div#players
       div#game.row
         div.row
-          div.col-md-4#role
-          div#judge.col-md-4.centerblock
+          div.col-md-4.col-sm-4.col-xs-4#role
+          div#judge.col-md-4.col-sm-4.col-xs-4.centerblock
             div.judge
         div.row
-          div.col-md-1
-          div#person1.col-md-4.centerblock
-          div.col-md-2#timer
-          div#person2.col-md-4.centerblock
+          div.col-md-1.col-sm-1.col-xs-1
+          div#person1.col-md-4.col-sm-4.col-xs-4.centerblock
+          div.col-md-2.col-sm-2.col-xs-2#timer
+          div#person2.col-md-4.col-sm-4.col-xs-4.centerblock
         div.row
-          div.col-md-1
-          div#button1_div.col-md-4.buttons
-          div#tie_button_div.col-md-2.buttons
-          div#button2_div.col-md-4.buttons
+          div.col-md-1.col-sm-1.col-xs-1
+          div#button1_div.col-md-4.col-sm-4.col-xs-4.buttons
+          div#tie_button_div.col-md-2.col-sm-2.col-xs-2.buttons
+          div#button2_div.col-md-4.col-sm-4.col-xs-4.buttons
         div.row
-          div.col-md-3
-          div.col-md-6#reason_div
+          div.col-md-3.col-sm-3.col-xs-3
+          div.col-md-6.col-sm-6.col-xs-6#reason_div
         div.row
-          div.col-md-4
-          div.col-md-4.center
+          div.col-md-4.col-sm-4.col-xs-4
+          div.col-md-4.col-sm-4.col-xs-4.center
             p#question
             form#player_form
